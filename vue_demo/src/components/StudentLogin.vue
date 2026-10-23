@@ -120,8 +120,7 @@ export default {
 .login-container {
   width: 100vw;
   height: 100vh;
-//background-image: url('../assets/Koala.jpg'); 
-background-image: url('file:///C:/Users/yangz11/Pictures/Sample Pictures/ Koala.jpg');
+  background-image: url('../assets/background.png'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
