@@ -101,19 +101,28 @@ export default {
       this.newStudent = { studentId: "", password: "", name: "", email: "" };
     },    
     // NEW: Handle the registration logic
+    
+
     submitRegistration() {
-      // Print the collected student info in console for testing
-      console.log("Submitting new student data:", this.newStudent);      
-      // TODO: Connect to your registration api service here, e.g.:
-      // LoginService.register(this.newStudent).then(...).catch(...)
-            alert("Registration submitted successfully!");
-      this.closeCreateModal(); // Close modal after successful submission
+      LoginService.register(this.newStudent)
+        .then(response => {
+          alert(response.data.message);
+          this.closeCreateModal();
+        })
+        .catch(error => {
+          if (error.response && error.response.data.message) {
+            alert(error.response.data.message);
+          } else {
+            alert("Registration failed. Please try again.");
+          }
+        });
     }
   },
   mounted() {
     this.message = "";
   }
 };
+
 </script>
 <style scoped>
 /* Main wrapper setting the full-screen view and background picture */
