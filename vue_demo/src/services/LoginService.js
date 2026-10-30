@@ -7,6 +7,11 @@ class LoginService {
         return axios.post(`${API_URL}/login`, credentials);
     }
 
+     remove(credentials) {
+    return axios.post(`${API_URL}/remove`, credentials);
+  }
+
+
     register(studentData) {
         return axios.post(`${API_URL}/register`, studentData);
     }

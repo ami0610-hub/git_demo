@@ -100,5 +100,46 @@ public class StudentController {
         // return 201 Created status code
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
+    
+    @PostMapping("/remove")
+    public ResponseEntity<?> remove(@RequestBody Map<String, String> removeRequest) {
+        String studentId = removeRequest.get("studentId");
+        String password = removeRequest.get("password");
+
+        // 1. verify the input student ID and password are not empty 
+        if (studentId == null || studentId.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Student ID and Password cannot be empty.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+
+        // 2. check the student existence 
+        Student student = studentDatabase.get(studentId);
+
+        // 3. validate the login info 
+        if (student != null && student.getPassword().equals(password)) {
+            //success
+        	studentDatabase.remove(studentId);
+        	
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", student.getStudentId());
+            response.put("name", student.getName());
+            response.put("email", student.getEmail());
+            
+            
+            // send 200 OK along with student info
+            return ResponseEntity.ok(response);
+        } else {
+            // fail
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Invalid Student ID or Password");
+            
+            // send 401 Unauthorized 
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
+    
 
 }
