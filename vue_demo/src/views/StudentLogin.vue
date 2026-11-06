@@ -83,6 +83,8 @@ export default {
           console.log(student);
           localStorage.setItem("sid", student.id);
           alert("success!");
+          // Redirect to the HelloWorld landing page
+          this.$router.push('/helloworld');
         })
         .catch(e => {
           this.studentLoginRequest.studentId = "";
