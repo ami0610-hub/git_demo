@@ -1,4 +1,5 @@
 <template>
+  <!-- ログインと新規学生登録の画面。LoginService経由でサーバーへ認証・登録を依頼する。 -->
   <!-- Full-screen background wrapper -->
   <div class="login-container">
     <!-- Centered login form card -->
@@ -54,6 +55,9 @@
   </div>
 </template>
 <script>
+// フォーム入力、登録モーダルの表示状態、および認証処理を管理する。
+// router/index.jsの/に表示され、LoginService.jsを介してcrsのStudentControllerへ接続する。
+// ログイン成功時は学生IDをlocalStorageに保存し、/helloworldへ移動する。
 import LoginService from "../services/LoginService";
 export default {
   name: "studentLogin",
@@ -64,9 +68,9 @@ export default {
         password: ""
       },
       message: "",
-            // NEW: State for controlling the modal visibility
+      // 登録モーダルの表示状態を切り替える。
       showModal: false,
-            // NEW: Data object object to store registration details
+      // StudentController.registerStudentへ送る学生登録内容。
       newStudent: {
         studentId: "",
         password: "",
@@ -76,6 +80,7 @@ export default {
     };
   },
   methods: {
+    // 入力した学生IDとパスワードを認証し、成功時に識別子を保存して次画面へ進む。
     login() {
       LoginService.login(this.studentLoginRequest)
         .then(response => {
@@ -93,11 +98,11 @@ export default {
           console.error(e);
         });
     },
-        // NEW: Open the registration form modal
+    // 登録モーダルを開く。closeCreateModalは閉じる際に入力値も初期化する。
     openCreateModal() {
       this.showModal = true;
     },    
-    // NEW: Close the registration form modal and clear inputs
+    // 登録モーダルを閉じ、入力中の登録情報を初期化する。
     closeCreateModal() {
       this.showModal = false;
       this.newStudent = { studentId: "", password: "", name: "", email: "" };
@@ -105,6 +110,7 @@ export default {
     // NEW: Handle the registration logic
     
 
+    // 登録フォームの内容をLoginService経由で送信し、結果を通知する。
     submitRegistration() {
       LoginService.register(this.newStudent)
         .then(response => {

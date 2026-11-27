@@ -23,21 +23,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.crs.model.Course;
 import com.example.crs.model.CourseRepository;
 
+/**
+ * コースAPIのHTTPリクエストを受け付けるコントローラー。
+ * CourseRepositoryでCourseを検索・保存・削除し、VueのHelloWorld.vueがGET /api/coursesを利用する。
+ */
 @CrossOrigin(origins = "http://localhost:5173") // used for vue
 @RestController
 @RequestMapping("/api")
 public class CourseController {
 
+	// SpringがCourseRepositoryの実装を注入する。実装と永続化処理はSpring Data JPAが提供する。
 	@Autowired
 	CourseRepository courseRepository;
 
+	// APIの稼働確認用。/api/へのGETに応答する。
 	@GetMapping("/")
 	public String home()
 	{
 		return "API is working";
 	}
-	//http://localhost:8080/api/courses
-//api/courses?title=software/
+	// GET /api/courses。title指定時は部分一致検索し、結果がCourseの配列としてJSON化される。
 	@GetMapping("/courses")
 	public ResponseEntity<List<Course>> getAllCourses(@RequestParam(required = false) String title) {
 		try {
@@ -59,6 +64,7 @@ public class CourseController {
 		}
 	}
 
+	// GET /api/courses/{id}。CourseRepositoryでID検索し、存在しなければ404を返す。
 	@GetMapping("/courses/{id}")
 	public ResponseEntity<Course> getCourseById(@PathVariable("id") long id) {
 		Optional<Course> courseData = courseRepository.findById(id);
@@ -70,6 +76,7 @@ public class CourseController {
 		}
 	}
 
+	// POST /api/courses。受け取ったcode/titleからCourseを作成して保存する。
 	@PostMapping("/courses")
 	public ResponseEntity<Course> createTutorial(@RequestBody Course course) {
 		try {
@@ -80,6 +87,7 @@ public class CourseController {
 		}
 	}
 
+	// PUT /api/courses/{id}。既存Courseのcode/titleを更新する。
 	@PutMapping("/courses/{id}")
 	public ResponseEntity<Course> updateCourse(@PathVariable("id") long id, @RequestBody Course course) {
 		Optional<Course> courseData = courseRepository.findById(id);
@@ -94,6 +102,7 @@ public class CourseController {
 		}
 	}
 
+	// DELETE /api/courses/{id}。指定IDのCourseを削除する。
 	@DeleteMapping("/courses/{id}")
 	public ResponseEntity<HttpStatus> deleteCourse(@PathVariable("id") long id) {
 		try {
@@ -103,6 +112,7 @@ public class CourseController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	// DELETE /api/courses。CourseRepositoryに保存された全Courseを削除する。
 	@DeleteMapping("/courses")
 	public ResponseEntity<HttpStatus> deleteAllTutorials() {
 		try {

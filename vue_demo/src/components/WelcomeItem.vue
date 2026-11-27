@@ -1,4 +1,5 @@
 <template>
+  <!-- アイコン、見出し、本文をスロットで受け取る汎用の紹介項目。TheWelcome.vueが利用する。 -->
   <div class="item">
     <i>
       <slot name="icon"></slot>
@@ -13,6 +14,7 @@
 </template>
 
 <style scoped>
+/* TheWelcome.vueから渡された内容を1項目として並べる。色や区切り線にはbase.cssのCSS変数を使う。 */
 .item {
   margin-top: 2rem;
   display: flex;

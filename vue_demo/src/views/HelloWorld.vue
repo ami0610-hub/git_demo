@@ -1,4 +1,5 @@
 <template>
+  <!-- ログイン後の案内とcrsバックエンドから取得したコース一覧を表示する。 -->
   <div class="hello-container">
     <h1>Hello World! 🎉</h1>
     <p>Congratulations, you have logged in successfully!</p>
@@ -46,32 +47,38 @@
 </template>
 
 <script setup>
+// ログイン成功後に表示する画面。StudentLogin.vueからVue Routerで遷移し、戻る操作もRouterに依頼する。
+// コース取得先はcrs/src/.../CourseController.javaのGET /api/coursesで、Courseのid/code/titleを表に出す。
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
 const router = useRouter()
 
-// Reactive state variables
+// 表示用のコース一覧と通信状態。hasSearchedで初期案内と検索後の空表示を切り替える。
 const courses = ref([])
 const loading = ref(false)
 const statusMessage = ref('')
 
 const hasSearched = ref(false)
 
+// 保存情報を消去し、ログイン画面へ戻る。
 const goBack = () => {
   localStorage.clear()
   router.push('/')
 }
 
+// コースAPIを別タブで直接開く。
 const openCourseApi = () => {
   window.open('http://localhost:8080/api/courses', '_blank');
 }
 
+// コース一覧APIを取得し、結果または空状態を画面へ反映する。
 const fetchCourses = async () => {
   loading.value = true
   statusMessage.value = ''
 	
   try {
+    // CourseControllerは該当データなしの場合204を返し、CourseRepository経由で一覧を返す。
     const response = await fetch('http://localhost:8080/api/courses')
 
     if (response.status === 204) {

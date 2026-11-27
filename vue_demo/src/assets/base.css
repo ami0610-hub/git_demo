@@ -1,3 +1,5 @@
+/* main.cssから読み込まれ、全画面の色トークン、リセット、本文の基本スタイルを定義する。
+   WelcomeItem.vueなどのスタイルがここで定義したCSS変数を参照する。 */
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
