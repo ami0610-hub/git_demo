@@ -11,16 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * VueのStudentLogin.vueから呼ばれる学生ログイン・登録API。
+ * Studentを使って学生情報を扱う。現在の学生データはDBではなくプロセス内Mapに保持する。
+ */
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api")
 public class StudentController {
 
-    // In-memory student database
+    // 学生IDをキーに学生を保持する簡易インメモリ領域。サーバー再起動で登録データは消える。
     private static final Map<String, Student> studentDatabase =
             new ConcurrentHashMap<>();
 
-    // Test account
+    // Vueから動作確認できる初期アカウント。
     static {
         Student defaultStudent = new Student();
         defaultStudent.setStudentId("1001");
@@ -30,14 +34,14 @@ public class StudentController {
         studentDatabase.put("1001", defaultStudent);
     }
 
-    // Login
+    // POST /api/login。StudentLogin.vueのLoginService.loginが呼び出し、成功時にid/nameを返す。
     @PostMapping("/login")
     //public ResponseEntity<?> login(...) { ... }   
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String studentId = loginRequest.get("studentId");
         String password = loginRequest.get("password");
 
-        // 1. verify the input student ID and password are not empty 
+        // 学生IDとパスワードの未入力を検査する。
         if (studentId == null || studentId.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {
             
@@ -46,10 +50,10 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
-        // 2. check the student existence 
+        // 入力された学生IDでStudentを検索する。
         Student student = studentDatabase.get(studentId);
 
-        // 3. validate the login info 
+        // パスワードが一致した場合だけ、フロントエンドへ必要な識別情報を返す。
         if (student != null && student.getPassword().equals(password)) {
             // success, assemble the data back to  Vue
             Map<String, Object> response = new HashMap<>();
@@ -69,7 +73,7 @@ public class StudentController {
     }
 
 
-    // Register
+    // POST /api/register。StudentLogin.vueの登録モーダルからStudent情報を受け取りMapへ追加する。
     @PostMapping("/register")
     public ResponseEntity<?> registerStudent(@RequestBody Student newStudent) {
         // validate data, make sure not null

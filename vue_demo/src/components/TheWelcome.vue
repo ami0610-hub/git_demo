@@ -1,4 +1,6 @@
 <script setup>
+// Vueの案内項目をまとめて構成するコンポーネント。
+// WelcomeItem.vueのスロットに各アイコンと説明を渡し、icons配下のSVGコンポーネントを表示する。
 import WelcomeItem from './WelcomeItem.vue'
 import DocumentationIcon from './icons/IconDocumentation.vue'
 import ToolingIcon from './icons/IconTooling.vue'
@@ -6,6 +8,7 @@ import EcosystemIcon from './icons/IconEcosystem.vue'
 import CommunityIcon from './icons/IconCommunity.vue'
 import SupportIcon from './icons/IconSupport.vue'
 
+// 開発サーバーのエディター連携URLを呼び出す。各WelcomeItemの説明内リンクから実行される。
 const openReadmeInEditor = () => fetch('/__open-in-editor?file=README.md')
 </script>
 

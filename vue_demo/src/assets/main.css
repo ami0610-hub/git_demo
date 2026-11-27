@@ -1,3 +1,4 @@
+/* main.jsから読み込まれる全体スタイル。base.cssの色・共通ルールを参照し、#appやリンクを整える。 */
 @import './base.css';
 
 #app {
