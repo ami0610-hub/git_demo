@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Bean;
 import com.example.crs.model.Course;
 import com.example.crs.model.CourseRepository;
 
-/**
- * Spring Bootアプリケーションの起動クラス。
- * CourseRepositoryを使って起動時にサンプルコースを登録し、CourseControllerが返す初期データを用意する。
- */
+
+
+
+
 @SpringBootApplication
 public class CrsApplication {
 
@@ -19,7 +19,7 @@ public class CrsApplication {
 		SpringApplication.run(CrsApplication.class, args);
 	}
 
-	// Spring起動後に一度実行される初期化処理。CourseはJPAを通じてH2データベースへ保存する。
+
 	@Bean
 	ApplicationRunner init(CourseRepository repository) {
 		//lambda 
