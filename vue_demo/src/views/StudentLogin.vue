@@ -1,14 +1,33 @@
 <template>
-  <!-- ログインと新規学生登録の画面。LoginService経由でサーバーへ認証・登録を依頼する。 -->
+  
   <!-- Full-screen background wrapper -->
   <div class="login-container">
     <!-- Centered login form card -->
     <div class="edit-form">
       <h4>Login</h4>
       <form @submit.prevent="login">
+        <div style="margin: 10px 0;">
+	<label style="margin-right: 15px;">
+		<input 
+	                	  type="radio" 
+			  name="role" 
+			  value="STUDENT" 
+			  v-model="studentLoginRequest.role" 
+		/> Student
+	</label>
+	<label>
+		<input 
+			  type="radio" 
+			  name="role" 
+			  value="FACULTY" 
+			  v-model="studentLoginRequest.role" 
+		/> Faculty
+	</label>
+</div>
+
         <div>
           <label for="studentId">Student ID: </label>
-          <input type="text" id="studentId" v-model="studentLoginRequest.studentId"/>
+          <input type="text" id="studentId" v-model="studentLoginRequest.userId"/>
         </div>
         <div>
           <label for="password">Password: </label>
@@ -55,22 +74,23 @@
   </div>
 </template>
 <script>
-// フォーム入力、登録モーダルの表示状態、および認証処理を管理する。
-// router/index.jsの/に表示され、LoginService.jsを介してcrsのStudentControllerへ接続する。
-// ログイン成功時は学生IDをlocalStorageに保存し、/helloworldへ移動する。
+
+
+
 import LoginService from "../services/LoginService";
 export default {
   name: "studentLogin",
   data() {
     return {
       studentLoginRequest: {
-        studentId: "",
-        password: ""
+        userId: "",
+        password: "",
+        role: "STUDENT" 
       },
       message: "",
-      // 登録モーダルの表示状態を切り替える。
+
       showModal: false,
-      // StudentController.registerStudentへ送る学生登録内容。
+
       newStudent: {
         studentId: "",
         password: "",
@@ -80,29 +100,47 @@ export default {
     };
   },
   methods: {
-    // 入力した学生IDとパスワードを認証し、成功時に識別子を保存して次画面へ進む。
+
     login() {
       LoginService.login(this.studentLoginRequest)
         .then(response => {
-          var student = response.data;
-          console.log(student);
-          localStorage.setItem("sid", student.id);
-          alert("success!");
-          // Redirect to the HelloWorld landing page
-          this.$router.push('/helloworld');
-        })
+          console.log("1. Raw response:", response);
+          const resData = response.data || {}; //  
+
+          if (!resData || (typeof resData === 'object' && Object.keys(resData).length === 0)) {
+            this.message = "Backend returned 200 OK, but response body is empty!";
+            return;
+          }
+		  
+         const currentRole = resData.role || this.studentLoginRequest.role;
+          const currentUserId = resData.userId || this.studentLoginRequest.userId;
+          localStorage.setItem('userId', currentUserId);
+          localStorage.setItem('userRole', currentRole);
+
+          // if (currentRole === 'STUDENT') {
+          //   localStorage.setItem('sid', resData.id);
+          //   }
+
+          alert("Login success! Role: " + currentRole);
+         if (currentRole === 'FACULTY') {
+            this.$router.push('/faculty');
+          } else {
+            this.$router.push('/helloworld');
+          }        
+})
         .catch(e => {
-          this.studentLoginRequest.studentId = "";
+          this.studentLoginRequest.userId = "";
           this.studentLoginRequest.password = "";
           this.message = e.response?.data?.message || "Login failed, check internet or credential";
           console.error(e);
         });
     },
-    // 登録モーダルを開く。closeCreateModalは閉じる際に入力値も初期化する。
+
+
     openCreateModal() {
       this.showModal = true;
     },    
-    // 登録モーダルを閉じ、入力中の登録情報を初期化する。
+
     closeCreateModal() {
       this.showModal = false;
       this.newStudent = { studentId: "", password: "", name: "", email: "" };
@@ -110,7 +148,7 @@ export default {
     // NEW: Handle the registration logic
     
 
-    // 登録フォームの内容をLoginService経由で送信し、結果を通知する。
+
     submitRegistration() {
       LoginService.register(this.newStudent)
         .then(response => {

@@ -1,6 +1,6 @@
 <script>
-// 画面全体のルートコンポーネント。ルート定義に応じたビューを配置する。
-// main.jsから起動され、router/index.jsの設定をrouter-view経由で表示する。
+
+
 export default {
   name: "app",
 };
@@ -16,8 +16,8 @@ export default {
 </template>
 
 <style scoped>
-/* App.vueは画面共通の外枠を持つ。現状の表示内容はrouter-viewへ委譲される。
-   この旧テンプレート由来のheader/nav用スタイルは、現在のtemplateには該当要素がない。 */
+
+
 header {
   line-height: 1.5;
   max-height: 100vh;
